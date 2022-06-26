@@ -1,0 +1,51 @@
+Brute force : 
+Simply create another M*n matrix;
+check for 0 in original matrix and update 0 for that row and col in duplicate matrix ; 
+Copy the elements from duplicate matrix to original matrix
+
+Time  : O(m*n) { check for 0} + O(m+n) {to traverse to make row and col zero in duplicate}
+Space : O(m*n)
+
+Better:
+Algo - 
+We make a pass over our original array and look for zero entries.
+If we find that an entry at [i, j] is 0, then we need to record somewhere the row i and column j. --> in array row and col
+So, we use two sets, one for the rows and one for the columns
+ if r in row_set or c in column_set {
+     cell[r][c] = 0
+ }
+
+ Time : O(m*n + m*n) 
+ Space : O(m + n)
+
+
+Best : 
+
+Use the first row and col instead of another variable
+store states of each row in the first of that row, and store states of each column in the first of that column.
+Because the state of row0 and the state of column0 would occupy the same cell, I let it be the state of row0, 
+and use another variable "flag" for column0
+ In the first phase, use matrix elements to set states in a top-down way. In the second phase, use states to set matrix elements in a bottom-up way.
+ because : If we do top down approach in second pass, row 0 gets affected before row 1, row 2 and row 3. In such a case, it can change the value of associated column in the next iteration. To avoid the change, a bottom up approach is used such that row 0 gets affected in the end
+
+Time O(m*n + m*n)
+Space O(1)
+
+Code  :
+void setZeroes(vector<vector<int> > &matrix) {
+    int flag = 1, rows = matrix.size(), cols = matrix[0].size();
+
+    for (int i = 0; i < rows; i++) {
+        if (matrix[i][0] == 0) flag = 0;
+        for (int j = 1; j < cols; j++)
+            if (matrix[i][j] == 0)
+                matrix[i][0] = matrix[0][j] = 0;
+    }
+
+    for (int i = rows - 1; i >= 0; i--) {
+        for (int j = cols - 1; j >= 1; j--)
+            if (matrix[i][0] == 0 || matrix[0][j] == 0)
+                matrix[i][j] = 0;
+        if (flag == 0) matrix[i][0] = 0;
+    }
+}
